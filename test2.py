@@ -5,7 +5,6 @@ import json
 import socket
 
 
-count = 0
 domain1 = 'leroymerlin.ru'
 domain2 = 'lmru.tech'
 temp = {domain1: [], domain2: []}
@@ -28,13 +27,12 @@ def append_to_dict(domain, host, port, service):
         })
     # print(temp)
 
+
 # Функция, которая сканирует порты
 def scan(host_name):
-    global count
-    count += 1
-
-    port_begin = 79
+    port_start = 79
     port_end = 82
+
     if re.finditer(fr'.*{domain1}', host_name):
         domain = domain1
     else:
@@ -42,8 +40,8 @@ def scan(host_name):
     scanner = nmap.PortScanner()
     try:
         target_ip = socket.gethostbyname(host_name)
-        for i in range(port_begin, port_end+1):
-            res = scanner.scan(target_ip, str(i), arguments='-sT --top-ports 100')
+        for i in range(port_start, port_end + 1):
+            res = scanner.scan(target_ip, str(i), arguments='-sT')
             try:
                 status = res['scan'][target_ip]['tcp'][i]['state']
                 service = res['scan'][target_ip]['tcp'][i]['name']
@@ -79,4 +77,3 @@ with open("clear.txt", "r") as f2:
 f3 = open("scan_results.json", "w")
 json.dump(temp, f3)
 f3.close()
-print(count)
